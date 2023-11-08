@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Post(
 
 CREATE TABLE IF NOT EXISTS Post_Image(
     pid      INT             NOT NULL,                   # 게시물 번호
-    img_id   INT             NOT NULL,                   # 이미지 순서
+    img_id   INT             NOT NULL,                   # 이미지 번호
     name     VARCHAR(1000)   NOT NULL,                   # 이미지 이름
     
     PRIMARY KEY (pid, img_id),

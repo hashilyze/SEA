@@ -2,42 +2,44 @@ const pool = require('./mysql_pool');
 const fs = require('fs/promises');
 
 
-async function init(){
+// Database Setup
+exports.init = async function(){
     let conn = await pool.promise().getConnection();
+    let option = {encoding: 'utf-8'};
+    let path = './database/sqls/';
 
+    let excute = async (name) => {
+        let stmt = await fs.readFile(path + name, option);
+        await conn.query(stmt);
+    };
     try{
-        await conn.beginTransaction();        
+        await conn.beginTransaction(); 
 
-        // Create database
-        let stmt = await fs.readFile('./database/sqls/database.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        // === Create database ===
+        await excute('database.sql');
+        // === Create tables ===
         // Create User
-        stmt = await fs.readFile('./database/sqls/table_user.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('table_user.sql');
         // Create Format
-        stmt = await fs.readFile('./database/sqls/table_format.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('table_format.sql');
         // Create Category
-        stmt = await fs.readFile('./database/sqls/table_category.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('table_category.sql');
         // Create Post
-        stmt = await fs.readFile('./database/sqls/table_post.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('table_post.sql');
         // Create Basket
-        stmt = await fs.readFile('./database/sqls/table_basket.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('table_basket.sql');
         // Create Logs
-        stmt = await fs.readFile('./database/sqls/table_user_log.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('table_user_log.sql');
+        // === Create views ===
         // Create XPost
-        stmt = await fs.readFile('./database/sqls/view_xpost.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
-        // Setup default
-        stmt = await fs.readFile('./database/sqls/setup_default.sql', {encoding: 'utf-8'});
-        await conn.query(stmt);
+        await excute('view_xpost.sql');
+        // Create XBasket
+        await excute('view_xbasket.sql');
+        // === Insert default records ===
+        await excute('setup_default.sql');
 
         await conn.commit();
-        console.log("Success");
+        console.log("Success to initialize database");
     } catch(err){
         await conn.rollback();
         console.error("Can not initialze database");
@@ -47,5 +49,10 @@ async function init(){
     }
 };
 
-init();
-exports = init;
+if(typeof require !== 'undefined' && require.main === module){
+    console.log("Start Database Initialization");
+    this.init().then(() => {
+        console.log("End Proccess");
+        process.exit(0)
+    });
+}
