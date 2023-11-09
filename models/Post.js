@@ -207,4 +207,29 @@ Post.deleteById = async function (id) {
     }
 }
 
+
+/**
+ * @param {Number} id 
+ * @param {Number} val
+ * @param {String} column
+ */
+async function addValueById(id, val, column) {
+    let sql = `UPDATE Post SET ?? = ?? + ? WHERE pid = ?`;
+    let vals = [column, column, val, id];
+    let rows = await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
+
+    if (rows.affectedRows == 0) {
+        console.error(`Error: there is not post{ pid: ${id} }`);
+        throw { kind: "not_found" };
+    } else {
+        console.log(`Updated post(${id})'s ${column}`);
+        return true;
+    }
+};
+
+
+Post.addViewsById = async (id, val) => addValueById(id, val, "views");
+Post.addLikesById = async (id, val) => addValueById(id, val, "likes");
+Post.addDownloadsById = async (id, val) => addValueById(id, val, "downloads");
+
 module.exports = Post;

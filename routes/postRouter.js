@@ -27,10 +27,10 @@ router.put("/:pid", controller.updateOne);
 router.delete("/:pid", controller.deleteOne);
 
 // 조회수 증가
-router.post("/:pid/up-views", (req, res) => res.send("조회수 증가"));
+router.post("/:pid/up-views", controller.upViews);
 // 추천수 증가
-router.post("/:pid/up-likes", (req, res) => res.send("추천수 증가"));
+router.post("/:pid/up-likes", controller.upLikes);
 // 다운로드수 증가
-router.post("/:pid/up-downloads", (req, res) => res.send("다운로드수 증가"));
+router.post("/:pid/up-downloads", controller.upDownloads);
 
 module.exports=router;

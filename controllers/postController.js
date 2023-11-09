@@ -64,3 +64,42 @@ exports.findAll = async function (req, res) {
         utility.errorHandle(err, req, res);
     }
 };
+
+
+// 조회수 증가
+exports.upViews = async function(req, res) {
+    let pid = req.params.pid;
+
+    try {
+        await Post.addViewsById(pid, 1);
+        res.send({ ...utility.getSuccess() });
+    } catch (err) {
+        utility.errorHandle(err, req, res);
+    }
+};
+
+
+// 추천수 증가
+exports.upLikes = async function(req, res) {
+    let pid = req.params.pid;
+
+    try {
+        await Post.addLikesById(pid, 1);
+        res.send({ ...utility.getSuccess() });
+    } catch (err) {
+        utility.errorHandle(err, req, res);
+    }
+};
+
+
+// 다운로드수 증가
+exports.upDownloads = async function(req, res) {
+    let pid = req.params.pid;
+
+    try {
+        await Post.addDownloadsById(pid, 1);
+        res.send({ ...utility.getSuccess() });
+    } catch (err) {
+        utility.errorHandle(err, req, res);
+    }
+};
