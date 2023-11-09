@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const util = require("./util");
+const utility = require("./utility");
 
 
 // 사용자 생성
@@ -8,9 +8,9 @@ exports.create = async function (req, res) {
     
     try {
         let id = await User.create(newUser);
-        res.status(201).send({ ...util.getSuccess(), uid: id });
+        res.status(201).send({ ...utility.getSuccess(), uid: id });
     } catch (err) {
-        util.errorHandle(err, req, res);
+        utility.errorHandle(err, req, res);
     }
 };
 
@@ -21,9 +21,9 @@ exports.findOne = async function (req, res) {
 
     try {
         let user = await User.findById(uid);
-        res.send({ ...util.getSuccess(), user });
+        res.send({ ...utility.getSuccess(), user });
     } catch (err) {
-        util.errorHandle(err, req, res);
+        utility.errorHandle(err, req, res);
     }
 };
 
@@ -35,9 +35,9 @@ exports.updateOne = async function (req, res) {
 
     try {
         await User.updateById(uid, updateInfo);
-        res.send(util.getSuccess());
+        res.send(utility.getSuccess());
     } catch (err) {
-        util.errorHandle(err, req, res);
+        utility.errorHandle(err, req, res);
     }
 };
 
@@ -48,9 +48,9 @@ exports.deleteOne = async function (req, res) {
 
     try {
         await User.deleteById(uid);
-        res.send(util.getSuccess());
+        res.send(utility.getSuccess());
     } catch (err) {
-        util.errorHandle(err, req, res);
+        utility.errorHandle(err, req, res);
     }
 }
 
@@ -59,8 +59,8 @@ exports.deleteOne = async function (req, res) {
 exports.findAll = async function (req, res) {
     try {
         let users = await User.findAll({ name: req.query.name || null });
-        res.send({ ...util.getSuccess(), users });
+        res.send({ ...utility.getSuccess(), users });
     } catch (err) {
-        util.errorHandle(err, req, res);
+        utility.errorHandle(err, req, res);
     }
 };

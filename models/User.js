@@ -1,5 +1,6 @@
-const mysql = require("mysql2");
 const pool = require("../database/mysql_pool");
+const { transactionWrapper } = require("./utility");
+
 
 class User {
     constructor({ uid, role, login_id, password, name, created_at }) {
@@ -18,48 +19,25 @@ class User {
  * @returns {Promise<Number>} insertId
  */
 User.create = async function (newUser) {
-    const conn = await pool.promise().getConnection();
     let sql = `
     INSERT INTO User 
     SET 
-        login_id = ?, 
+        login_id = ?,
         password = ?, 
         name = ?,
         role = IFNULL(?, 0)
     `;
     let vals = [newUser.login_id, newUser.password, newUser.name, newUser.role];
+    let rows = await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
 
-    try {
-        await conn.beginTransaction();
-        var [rows, fields] = await conn.query(sql, vals);
-        await conn.commit();
-    } catch (err) {
-        await conn.rollback();
-        console.log(err);
-        throw { kind: "server_error" };
-    } finally {
-        conn.release();
-    }
     console.log(`Created user{ uid: ${rows.insertId} }`);
     return rows.insertId;
 };
 
 
 async function findOne(column, key) {
-    const conn = await pool.promise().getConnection();
     const sql = "Select * FROM User WHERE ?? = ?";
-
-    try {
-        await conn.beginTransaction();
-        var [rows, fields] = await conn.query(sql, [column, key]);
-        await conn.commit();
-    } catch (err) {
-        await conn.rollback();
-        console.log(err)
-        throw { kind: "server_error" };
-    } finally {
-        conn.release();
-    }
+    let rows = await transactionWrapper(async (conn) => (await conn.query(sql, [column, key]))[0]);
 
     if (rows.length == 0) {
         console.log(`Can not found user{ ${column}: ${key} }`);
@@ -80,25 +58,13 @@ User.findById = async (id) => findOne("uid", id);
  */
 User.findAll = async function (filter) {
     if (!filter) filter = {};
-    const conn = await pool.promise().getConnection();
     let sql = `
-    Select * 
-    FROM User 
+    Select * FROM User 
     WHERE name LIKE IFNULL(CONCAT('%', ?, '%'), name)
     ORDER BY uid ASC
     `;
+    let rows = await transactionWrapper(async (conn) => (await conn.query(sql, [filter.name]))[0]);
 
-    try {
-        await conn.beginTransaction();
-        var [rows, fields] = await conn.query(sql, [filter.name]);
-        await conn.commit();
-    } catch (err) {
-        await conn.rollback();
-        console.log(err);
-        throw { kind: "server_error" };
-    } finally {
-        conn.release();
-    }
     console.log(`Found ${rows.length} users`);
     return rows.map((val) => new User(val));
 };
@@ -109,7 +75,6 @@ User.findAll = async function (filter) {
  * @param {User} user
  */
 User.updateById = async function (id, user) {
-    const conn = await pool.promise().getConnection();
     let sql = `
     UPDATE User 
     SET 
@@ -120,20 +85,9 @@ User.updateById = async function (id, user) {
         created_at = IFNULL(?, created_at)
     WHERE uid = ?
     `;
-    let vals = [user.role, user.login_id, user.password,
-    user.name, user.created_at, id];
-
-    try {
-        await conn.beginTransaction();
-        var [rows, fields] = await conn.query(sql, vals);
-        await conn.commit();
-    } catch (err) {
-        await conn.rollback();
-        console.log(err);
-        throw { kind: "server_error" };
-    } finally {
-        conn.release();
-    }
+    let vals = [user.role, user.login_id, user.password, 
+        user.name, user.created_at, id];
+    let rows = await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
 
     if (rows.affectedRows == 0) {
         console.error(`Error: there is not user{ uid: ${id} }`);
@@ -149,19 +103,8 @@ User.updateById = async function (id, user) {
  * @param {Number} id 
  */
 User.deleteById = async function (id) {
-    const conn = await pool.promise().getConnection();
     let sql = `DELETE FROM User WHERE uid = ?`;
-
-    try {
-        await conn.beginTransaction();
-        var [rows, fields] = await conn.query(sql, [id]);
-        await conn.commit();
-    } catch (err) {
-        await conn.rollback();
-        console.log(err);
-    } finally {
-        conn.release();
-    }
+    let rows = await transactionWrapper(async (conn) => (await conn.query(sql, [id]))[0]);
 
     if (rows.affectedRows == 0) {
         console.error(`Error: there is not user{ uid: ${id} }`);
