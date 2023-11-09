@@ -98,5 +98,4 @@ Format.deleteById = async function (id) {
     }
 };
 
-
 module.exports = Format;

@@ -114,4 +114,5 @@ User.deleteById = async function (id) {
         return true;
     }
 };
+
 module.exports = User;

@@ -17,5 +17,4 @@ router.put("/:uid", controller.updateOne);
 // 사용자 삭제
 router.delete("/:uid", controller.deleteOne);
 
-
 module.exports=router;

@@ -98,5 +98,4 @@ Category.deleteById = async function (id) {
     }
 };
 
-
 module.exports = Category;
