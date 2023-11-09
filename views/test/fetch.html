@@ -28,6 +28,12 @@
     <br>
     <div>
         <div>
+            <select id ="outputStyle">
+                <option value="Plain">Plain Text</option>
+                <option value="JSON">JSON</option>
+            </select>           
+        </div>
+        <div>
             <input type="text" id="inUrl" placeholder="url"> 
         </div>
         <br>
@@ -41,6 +47,7 @@
     function excuteMethod(_method) {
         let _url = document.getElementById("inUrl").value;
         let _body = document.getElementById("inBody").value;
+        let outputStyle = document.getElementById("outputStyle").value;
         console.log("url: ", _url, "\nbody: ", _body);
         let req = {
             method: _method,
@@ -52,8 +59,12 @@
 
 
         fetch(_url, req)
-        // .then((response) => response.json())
-        .then((response) => response.text())
+        .then((response) => {
+            if(outputStyle == "JSON"){
+                return response.json()
+            }
+            return response.text();
+        })
         .then((data) => console.log(data));
     };
 </script>
