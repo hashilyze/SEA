@@ -1,5 +1,6 @@
 const Basket = require("../models/Basket");
 const Download = require("../models/Download");
+const Post = require("../models/Post");
 const utility = require("./utility");
 
 
@@ -11,6 +12,7 @@ exports.payOnBasket = async (req, res) => {
         let baskets = await Basket.findAll({uid});
         for(let basket of baskets){
             await Download.create({uid: basket.uid, pid: basket.pid});
+            await Post.addDownloadsById(basket.pid, 1);
             await  Basket.deleteById({uid: basket.uid, pid: basket.pid});
         }
         res.send(utility.getSuccess());
@@ -26,6 +28,7 @@ exports.onePay = async (req, res) => {
 
     try{
         await Download.create({uid, pid});
+        await Post.addDownloadsById(pid, 1);
         res.send(utility.getSuccess());
     } catch(err){
         utility.errorHandle(err, req, res);

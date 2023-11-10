@@ -1,4 +1,7 @@
 const Post = require("../models/Post");
+const View = require("../models/View");
+const Like = require("../models/Like");
+const Download = require("../models/Download");
 const utility = require("./utility");
 
 
@@ -87,8 +90,10 @@ exports.findAll = async function (req, res) {
 // 조회수 증가
 exports.upViews = async function(req, res) {
     let pid = req.params.pid;
+    let uid = req.session.uid;
 
     try {
+        if(uid) await View.create({pid, uid});
         await Post.addViewsById(pid, 1);
         res.send({ ...utility.getSuccess() });
     } catch (err) {
@@ -100,10 +105,16 @@ exports.upViews = async function(req, res) {
 // 추천수 증가
 exports.upLikes = async function(req, res) {
     let pid = req.params.pid;
+    let uid = req.session.uid;
 
     try {
-        await Post.addLikesById(pid, 1);
-        res.send({ ...utility.getSuccess() });
+        Like.findById({pid, uid}).then((data) => {
+            utility.errorHandle({kind: "forbidden"}, req, res);
+        }).catch(async (err) => {
+            await Post.addLikesById(pid, 1);
+            await Like.create({pid, uid});
+            res.send({ ...utility.getSuccess() });
+        });
     } catch (err) {
         utility.errorHandle(err, req, res);
     }
@@ -113,10 +124,17 @@ exports.upLikes = async function(req, res) {
 // 다운로드수 증가
 exports.upDownloads = async function(req, res) {
     let pid = req.params.pid;
+    let uid = req.session.uid;
 
     try {
-        await Post.addDownloadsById(pid, 1);
-        res.send({ ...utility.getSuccess() });
+        Download.findById({pid, uid}).then((data) => {
+            utility.errorHandle({kind: "forbidden"}, req, res);
+        }).catch(async (err) => {
+            await Post.addDownloadsById(pid, 1);
+            await Download.create({pid, uid});
+            res.send({ ...utility.getSuccess() });
+        });
+        
     } catch (err) {
         utility.errorHandle(err, req, res);
     }

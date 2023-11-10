@@ -39,7 +39,7 @@ class Basket {
  * @returns {Promise<Number>} insertId
  */
 Basket.create = async function (newBasket) {
-    let sql = "INSERT INTO Basket SET uid = ?, pid = ?";
+    let sql = "INSERT IGNORE INTO Basket SET uid = ?, pid = ?";
     let vals = [newBasket.uid, newBasket.pid];
     await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
 
