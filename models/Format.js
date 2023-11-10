@@ -24,7 +24,7 @@ Format.create = async function (newFormat) {
 
 
 async function findOne(column, key) {
-    const sql = "Select * FROM Format WHERE ?? = ?";
+    const sql = "SELECT * FROM Format WHERE ?? = ?";
     let rows = await transactionWrapper(async(conn) => (await conn.query(sql, [column, key]))[0]);
 
     if (rows.length == 0) {
@@ -48,7 +48,7 @@ Format.findByName = async (name) => findOne("name", name);
 Format.findAll = async function (filter) {
     if (!filter) filter = {};
     let sql = `
-    Select * FROM Format 
+    SELECT * FROM Format 
     WHERE name LIKE IFNULL(CONCAT('%', ?, '%'), name)
     ORDER BY fid ASC
     `;

@@ -36,7 +36,7 @@ User.create = async function (newUser) {
 
 
 async function findOne(column, key) {
-    const sql = "Select * FROM User WHERE ?? = ?";
+    const sql = "SELECT * FROM User WHERE ?? = ?";
     let rows = await transactionWrapper(async (conn) => (await conn.query(sql, [column, key]))[0]);
 
     if (rows.length == 0) {
@@ -59,7 +59,7 @@ User.findById = async (id) => findOne("uid", id);
 User.findAll = async function (filter) {
     if (!filter) filter = {};
     let sql = `
-    Select * FROM User 
+    SELECT * FROM User 
     WHERE name LIKE IFNULL(CONCAT('%', ?, '%'), name)
     ORDER BY uid ASC
     `;

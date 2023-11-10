@@ -51,7 +51,7 @@ Basket.create = async function (newBasket) {
  * @param {pid: Number, uid: Number} id
  */
 Basket.findById = async function (id) {
-    let sql = `Select * FROM XBasket WHERE uid = ? AND pid = ?`;
+    let sql = `SELECT * FROM XBasket WHERE uid = ? AND pid = ?`;
     let vals = [id.uid, id.pid];
     let rows = await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
 
@@ -60,7 +60,7 @@ Basket.findById = async function (id) {
         throw { kind: "not_found" };
     } else {
         console.log(`Found basket{ uid: ${id.uid}, pid: ${id.pid} }`);
-        return new Category(rows[0]);
+        return new Basket(rows[0]);
     }
 };
 
@@ -71,7 +71,7 @@ Basket.findById = async function (id) {
 Basket.findAll = async function (filter) {
     if (!filter) filter = {};
     let sql = `
-    Select * FROM XBasket
+    SELECT * FROM XBasket
     WHERE uid = IFNULL(?, uid) AND pid = IFNULL(?, pid)
     `;
     let vals = [filter.uid, filter.pid];

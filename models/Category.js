@@ -24,7 +24,7 @@ Category.create = async function (newCategory) {
 
 
 async function findOne(column, key) {
-    const sql = "Select * FROM Category WHERE ?? = ?";
+    const sql = "SELECT * FROM Category WHERE ?? = ?";
     let rows = await transactionWrapper(async(conn) => (await conn.query(sql, [column, key]))[0]);
 
     if (rows.length == 0) {
@@ -48,7 +48,7 @@ Category.findByName = async (name) => findOne("name", name);
 Category.findAll = async function (filter) {
     if (!filter) filter = {};
     let sql = `
-    Select * FROM Category 
+    SELECT * FROM Category 
     WHERE name LIKE IFNULL(CONCAT('%', ?, '%'), name)
     ORDER BY cid ASC
     `;
