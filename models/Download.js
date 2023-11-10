@@ -44,6 +44,7 @@ Download.findById = async function (id) {
 
 /**
  * @param {{pid: Number, uid: Number}} filter
+ * @return {Promise<Download[]>}
  */
 Download.findAll = async function (filter) {
     if (!filter) filter = {};

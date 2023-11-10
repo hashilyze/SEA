@@ -44,6 +44,7 @@ View.findById = async function (id) {
 
 /**
  * @param {{pid: Number, uid: Number}} filter
+ * @return {Promise<View[]>}
  */
 View.findAll = async function (filter) {
     if (!filter) filter = {};

@@ -1,5 +1,7 @@
 // Import
 const express = require("express");
+const controller = require("../controllers/payController");
+const auth = require("../middlewares/auth");
 // Router
 const router = express.Router();
 
@@ -7,8 +9,8 @@ const router = express.Router();
 router.get("/checkout", (req, res) => res.send("결제 페이지"));
 
 // 결제
-router.post("/pay", (req, res) => res.send("결제하기"));
+router.post("/", auth.requirePrivate, controller.payOnBasket);
 // 즉시 결제
-router.post("/pay/:pid", (req, res) => res.send("즉시 결제하기"));
+router.post("/:pid", auth.requirePrivate, controller.onePay);
 
 module.exports=router;

@@ -67,6 +67,7 @@ Basket.findById = async function (id) {
 
 /**
  * @param {{pid: Number, uid: Number}} filter
+ * @return {Promise<Basket[]>}
  */
 Basket.findAll = async function (filter) {
     if (!filter) filter = {};
