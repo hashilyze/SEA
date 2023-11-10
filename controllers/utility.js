@@ -1,5 +1,5 @@
-exports.getSuccess = function() { return { result: "success" } } ;
-exports.getFail = function() { return { result: "fail" } } ;
+exports.getSuccess = function() { return { result: "Success" } } ;
+exports.getFail = function() { return { result: "Fail" } } ;
 
 exports.errorHandle = function (err, req, res) {
     if (err.kind == "not_found") res.status(404);

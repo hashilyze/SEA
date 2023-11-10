@@ -50,6 +50,7 @@ async function findOne(column, key) {
 
 
 User.findById = async (id) => findOne("uid", id);
+User.findByLoginId = async (id) => findOne("login_id", id);
 
 
 /**

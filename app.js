@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
+var mysqlConfig = require('./database/config.json');
 // Router
 var indexRouter = require('./routes/index');
 var formatRouter = require('./routes/formatRouter');
@@ -34,6 +36,7 @@ app.use(session({
   secret: "default",
   resave: false,
   saveUninitialized: true,
+  store: new MySQLStore(mysqlConfig),
 }));
 
 app.use('/', indexRouter);
