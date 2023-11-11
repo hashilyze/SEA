@@ -2,16 +2,16 @@ const Category = require("../models/Category");
 const utility = require("./utility");
 
 
-exports.validateCreateParameter = (req, res, next) =>{
+exports.validateCreateParameter = async (req, res, next) =>{
     if(req.body.name === undefined){
         utility.errorHandle({kind: "bad_request"}, req, res);
         return;
     }
-    Category.findByName(req.body.name).then(() => {
+    if(await Category.existByName(req.body.name)){
         utility.errorHandle({kind: "bad_request"}, req, res)
-    }).catch(() => {
+    } else{
         next();
-    });
+    }
 };
 
 // 카테고리 생성

@@ -35,10 +35,20 @@ async function findOne(column, key) {
         return new Format(rows[0]);
     }
 };
+async function existOne(column, key) {
+    try{
+        await Format.findOne(column, key);
+        return true;
+    }catch(err){
+        return false;
+    }
+}
 
 
 Format.findById = async (id) => findOne("fid", id);
 Format.findByName = async (name) => findOne("name", name);
+Format.existById = async (id) => existOne("fid", id);
+Format.existByName = async (name) => existOne("name", name);
 
 
 /**

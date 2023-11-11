@@ -96,7 +96,15 @@ Post.findById = async function (id) {
         console.log(`Found post{ pid: ${id} }`);
         return new Post(rows[0]);
     }
-}
+};
+Post.existById = async function(id) {
+    try{
+        await Post.findById(id);
+        return true;
+    }catch(err){
+        return false;
+    }
+};
 
 
 /**

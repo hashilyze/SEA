@@ -2,16 +2,16 @@ const Format = require("../models/Format");
 const utility = require("./utility");
 
 
-exports.validateCreateParameter = (req, res, next) =>{
+exports.validateCreateParameter = async (req, res, next) =>{
     if(req.body.name === undefined){
         utility.errorHandle({kind: "bad_request"}, req, res);
         return;
     }
-    Format.findByName(req.body.name).then(() => {
-        utility.errorHandle({kind: "bad_request"}, req, res)
-    }).catch(() => {
+    if(await Format.existByName(req.body.name)){
+        utility.errorHandle({kind: "bad_request"}, req, res);
+    } else{
         next();
-    });
+    }
 };
 
 // 형식 생성

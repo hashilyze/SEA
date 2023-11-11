@@ -2,16 +2,19 @@ const Post = require("../models/Post");
 const View = require("../models/View");
 const Like = require("../models/Like");
 const Download = require("../models/Download");
+const User = require("../models/User");
+const Category = require("../models/Category");
+const Format = require("../models/Format");
 const utility = require("./utility");
 
 
-exports.validateCreateParameter = (req, res, next) =>{
+exports.validateCreateParameter = async (req, res, next) =>{
     if(req.body.title === undefined
         || req.body.description === undefined
         || req.body.price === undefined || isNaN(req.body.price)
-        || req.body.writer === undefined || isNaN(req.body.writer)
-        || req.body.category === undefined || isNaN(req.body.category)
-        || req.body.format === undefined || isNaN(req.body.format)
+        || req.body.writer === undefined || isNaN(req.body.writer) || !(await User.existById(req.body.writer))
+        || req.body.category === undefined || isNaN(req.body.category) || !(await Category.existById(req.body.category))
+        || req.body.format === undefined || isNaN(req.body.format) || !(await Format.existById(req.body.format))
         ){
         utility.errorHandle({kind: "bad_request"}, req, res);
         return;

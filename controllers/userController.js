@@ -2,18 +2,18 @@ const User = require("../models/User");
 const utility = require("./utility");
 
 
-exports.validateCreateParameter = (req, res, next) =>{
+exports.validateCreateParameter = async (req, res, next) =>{
     if(req.body.login_id === undefined
         || req.body.password === undefined
         || req.body.name === undefined){
         utility.errorHandle({kind: "bad_request"}, req, res);
         return;
     }
-    User.findByLoginId(req.body.login_id).then(() => {
+    if(await User.existByLoginId(req.body.login_id)){
         utility.errorHandle({kind: "bad_request"}, req, res)
-    }).catch(() => {
+    } else{
         next();
-    });
+    }
 };
 
 // 사용자 생성

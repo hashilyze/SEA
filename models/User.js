@@ -47,10 +47,20 @@ async function findOne(column, key) {
         return new User(rows[0]);
     }
 };
+async function existOne(column, key) {
+    try{
+        await User.findOne(column, key);
+        return true;
+    }catch(err){
+        return false;
+    }
+}
 
 
 User.findById = async (id) => findOne("uid", id);
-User.findByLoginId = async (id) => findOne("login_id", id);
+User.findByLoginId = async (login_id) => findOne("login_id", login_id);
+User.existById = async (id) => existOne("uid", id);
+User.existByLoginId = async (login_id) => existOne("login_id", login_id);
 
 
 /**

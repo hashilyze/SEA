@@ -35,10 +35,21 @@ async function findOne(column, key) {
         return new Category(rows[0]);
     }
 };
+async function existOne(column, key) {
+    try{
+        await Category.findOne(column, key);
+        return true;
+    }catch(err){
+        return false;
+    }
+};
 
 
 Category.findById = async (id) => findOne("cid", id);
 Category.findByName = async (name) => findOne("name", name);
+Category.existById = async (id) => existOne("cid", id);
+Category.existByName = async (name) => existOne("name", id);
+
 
 
 /**
