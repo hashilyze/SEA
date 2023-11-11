@@ -6,6 +6,7 @@ const path = require("path");
 const Post = require("../models/Post");
 const controller = require("../controllers/postController");
 const auth = require("../middlewares/auth");
+const nullSafty = require("../middlewares/nullSafty");
 // Router
 const router = express.Router();
 
@@ -49,6 +50,7 @@ router.put("/edit/:pid", (req, res) => res.send("게시물 갱신 페이지"));
 // 게시판
 router.get("/board", (req, res) => res.send("게시물 갱신 페이지"));
 
+
 // 게시물 생성
 router.post("/", 
     auth.requirePrivate, 
@@ -70,11 +72,20 @@ router.delete("/:pid",
     auth.requirePrivateOnlyMine, 
     controller.deleteOne);
 
+
 // 조회수 증가
-router.post("/:pid/up-views", controller.upViews);
+router.post("/:pid/up-views", 
+    nullSafty.ensurePost,
+    controller.upViews);
 // 추천수 증가
-router.post("/:pid/up-likes", auth.requirePrivate, controller.upLikes);
+router.post("/:pid/up-likes", 
+    auth.requirePrivate, 
+    nullSafty.ensurePost,
+    controller.upLikes);
 // 다운로드수 증가
-router.post("/:pid/up-downloads", auth.requirePrivate, controller.upDownloads);
+router.post("/:pid/up-downloads", 
+    auth.requirePrivate, 
+    nullSafty.ensurePost,
+    controller.upDownloads);
 
 module.exports=router;

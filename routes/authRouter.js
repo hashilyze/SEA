@@ -9,11 +9,11 @@ router.get("/sign-in", (req, res) => res.send("로그인 페이지"));
 // 회원가입 페이지
 router.get("/sign-up", (req, res) => res.send("회원가입 페이지"));
 
+
 // 로그인
 router.post("/sign-in", controller.signin);
 // 로그아웃
 router.post("/sign-out", controller.signout);
-
 // 로그인 상태 조회
 router.get("/state", controller.whoOnline);
 
