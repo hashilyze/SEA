@@ -42,13 +42,45 @@ const upload = multer({ storage: multer.diskStorage({
 
 
 // 게시물 열람 페이지
-router.get("/read/:pid", (req, res) => res.send("게시물 열람 페이지"));
+router.get("/read/:pid", 
+    nullSafty.ensurePost,
+    async (req, res) => {
+    res.render("details", { post: await Post.findById(req.params.pid) })
+});
 // 게시물 작성 페이지
-router.post("/write", (req, res) => res.send("게시물 작성 페이지"));
+router.get("/write", 
+    auth.requirePrivate,
+    (req, res) => res.render("write", { }));
 // 게시물 갱신 페이지
-router.put("/edit/:pid", (req, res) => res.send("게시물 갱신 페이지"));
+router.get("/edit/:pid", 
+    auth.extractWriter,
+    auth.requirePrivateOnlyMine,
+    async (req, res) => {
+        res.render("edit", { post: await Post.findById(req.params.pid) })
+});
 // 게시판
-router.get("/board", (req, res) => res.send("게시물 갱신 페이지"));
+router.get("/board", async (req, res) => {
+    res.render("board", { posts: await Post.findAll(
+        {
+            title: req.query.title,
+            description: req.query.description,
+            min_price: req.query.min_price,
+            max_price: req.query.max_price,
+    
+            writer: req.query.writer,
+            writer_name: req.query.writer_name,
+            category: req.query.category,
+            category_name: req.query.category_name,
+            format: req.query.format,
+            format_name: req.query.format_name,
+            
+            key: req.query.key,
+            order: req.query.order,
+            limit: parseInt(req.query.limit),
+            offset: parseInt(req.query.offset)
+        }
+    )})
+});
 
 
 // 게시물 생성

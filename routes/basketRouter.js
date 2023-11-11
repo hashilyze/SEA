@@ -9,7 +9,9 @@ const router = express.Router();
 
 
 // 장바구니 페이지
-router.get("/", (req, res) => res.send("장바구니 페이지"));
+router.get("/", 
+    auth.requirePrivate,
+    async (req, res) => res.render("basket", { baskets: await Basket.findAll({ uid: req.session.uid }) }));
 
 
 // 장바구니에 추가

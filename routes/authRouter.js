@@ -5,9 +5,9 @@ const controller = require("../controllers/authController");
 const router = express.Router();
 
 // 로그인 페이지
-router.get("/sign-in", (req, res) => res.send("로그인 페이지"));
+router.get("/sign-in", (req, res) => res.render("sign-in"));
 // 회원가입 페이지
-router.get("/sign-up", (req, res) => res.send("회원가입 페이지"));
+router.get("/sign-up", (req, res) => res.render("sign-up"));
 
 
 // 로그인

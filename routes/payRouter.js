@@ -3,11 +3,14 @@ const express = require("express");
 const controller = require("../controllers/payController");
 const auth = require("../middlewares/auth");
 const nullSafty = require("../middlewares/nullSafty");
+const Basket = require("../models/Basket");
 // Router
 const router = express.Router();
 
 // 결제 페이지
-router.get("/checkout", (req, res) => res.send("결제 페이지"));
+router.get("/checkout", 
+    auth.requirePrivate,
+    async (req, res) => res.render("checkout", { baskets: await Basket.findAll({ uid: req.session.uid }) }));
 
 
 // 결제
