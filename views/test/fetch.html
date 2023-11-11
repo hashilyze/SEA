@@ -28,10 +28,21 @@
     <br>
     <div>
         <div>
+            <label for="outputStyle">입력 형식</label>
+            <select id ="mediaStyle">
+                <option value="JSON" selected>JSON</option>
+                <option value="Form-Data">Form Data</option>
+            </select>
+        </div>
+        <div>
+            <label for="outputStyle">출력 형식</label>
             <select id ="outputStyle">
-                <option value="Plain">Plain Text</option>
+                <option value="Plain" selected>Plain Text</option>
                 <option value="JSON">JSON</option>
-            </select>           
+            </select>
+        </div>
+        <div>
+            <input type="file" name="image" id="image" accept="image/*" multiple>
         </div>
         <div>
             <input type="text" id="inUrl" placeholder="url"> 
@@ -47,21 +58,33 @@
     function excuteMethod(_method) {
         let _url = document.getElementById("inUrl").value;
         let _body = document.getElementById("inBody").value;
+        let mediaStyle = document.getElementById("mediaStyle").value;
         let outputStyle = document.getElementById("outputStyle").value;
+        
         console.log("url: ", _url, "\nbody: ", _body);
-        let req = {
-            method: _method,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
-        if(_method != "GET") req.body = _body;
-
+        let = req = { method: _method, };
+        if(mediaStyle == "JSON"){
+            req.headers = { "Content-Type": "application/json" };
+            if(_method != "GET") req.body = _body;
+        } else {
+            req.headers = { };
+            const formData = new FormData();
+            for(let file of document.getElementById("image").files){
+                formData.append("images", file);
+            }
+            
+            if(_body){
+                for(let [key, value] of Object.entries(JSON.parse(_body))){
+                    formData.append(key, value);        
+                }
+            }
+            if(_method != "GET") req.body = formData;
+        }
 
         fetch(_url, req)
         .then((response) => {
             if(outputStyle == "JSON"){
-                return response.json()
+                return response.json();
             }
             return response.text();
         })

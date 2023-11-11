@@ -8,6 +8,8 @@ const utility = require("./utility");
 // 게시물 생성
 exports.create = async function (req, res) {
     let newPost = new Post(req.body);
+    if(req.files) 
+        newPost.images = req.files.map((val) => val.filename);
 
     try {
         let id = await Post.create(newPost);
@@ -35,6 +37,9 @@ exports.findOne = async function (req, res) {
 exports.updateOne = async function (req, res){
     let pid = req.params.pid;
     let updateInfo = new Post(req.body);
+    if(req.files) 
+        updateInfo.images = req.files.map((val) => val.filename);
+    console.log(updateInfo);
 
     try {
         await Post.updateById(pid, updateInfo);
