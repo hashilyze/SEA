@@ -8,7 +8,9 @@ const router = express.Router();
 
 
 // 사용자 생성
-router.post("/", controller.create);
+router.post("/", 
+    controller.validateCreateParameter,
+    controller.create);
 // 사용자 검색
 router.get("/search", auth.requireAdmin, controller.findAll);
 // 사용자 가져오기

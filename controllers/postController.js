@@ -5,6 +5,22 @@ const Download = require("../models/Download");
 const utility = require("./utility");
 
 
+exports.validateCreateParameter = (req, res, next) =>{
+    if(req.body.title === undefined
+        || req.body.description === undefined
+        || req.body.price === undefined || isNaN(req.body.price)
+        || req.body.writer === undefined || isNaN(req.body.writer)
+        || req.body.category === undefined || isNaN(req.body.category)
+        || req.body.format === undefined || isNaN(req.body.format)
+        ){
+        utility.errorHandle({kind: "bad_request"}, req, res);
+        return;
+    }
+    
+    next();
+};
+
+
 // 게시물 생성
 exports.create = async function (req, res) {
     let newPost = new Post(req.body);

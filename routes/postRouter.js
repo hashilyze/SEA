@@ -54,6 +54,7 @@ router.get("/board", (req, res) => res.send("게시물 갱신 페이지"));
 // 게시물 생성
 router.post("/", 
     auth.requirePrivate, 
+    controller.validateCreateParameter,
     upload.array("images"),
     controller.create);
 // 게시물 검색

@@ -8,7 +8,10 @@ const router = express.Router();
 
 
 // 카테고리 생성
-router.post("/", auth.requireAdmin, controller.create);
+router.post("/", 
+    auth.requireAdmin, 
+    controller.validateCreateParameter, 
+    controller.create);
 // 카테고리 검색
 router.get("/search", controller.findAll);
 // 카테고리 가져오기

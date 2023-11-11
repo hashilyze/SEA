@@ -2,9 +2,29 @@ const User = require("../models/User");
 const utility = require("./utility");
 
 
+exports.validateCreateParameter = (req, res, next) =>{
+    if(req.body.login_id === undefined
+        || req.body.password === undefined
+        || req.body.name === undefined){
+        utility.errorHandle({kind: "bad_request"}, req, res);
+        return;
+    }
+    User.findByLoginId(req.body.login_id).then(() => {
+        utility.errorHandle({kind: "bad_request"}, req, res)
+    }).catch(() => {
+        next();
+    });
+};
+
 // 사용자 생성
 exports.create = async function (req, res) {
     let newUser = new User(req.body);
+    if(newUser.login_id === undefined
+    || newUser.password === undefined
+    || newUser.name === undefined){
+        utility.errorHandle({kind: "bad_request"}, req, res);
+        return;
+    }
     
     try {
         let id = await User.create(newUser);
@@ -17,7 +37,7 @@ exports.create = async function (req, res) {
 
 // 사용자 가져오기
 exports.findOne = async function (req, res) {
-    let uid = req.params.uid
+    let uid = req.params.uid;
 
     try {
         let user = await User.findById(uid);

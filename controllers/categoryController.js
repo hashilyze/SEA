@@ -2,6 +2,18 @@ const Category = require("../models/Category");
 const utility = require("./utility");
 
 
+exports.validateCreateParameter = (req, res, next) =>{
+    if(req.body.name === undefined){
+        utility.errorHandle({kind: "bad_request"}, req, res);
+        return;
+    }
+    Category.findByName(req.body.name).then(() => {
+        utility.errorHandle({kind: "bad_request"}, req, res)
+    }).catch(() => {
+        next();
+    });
+};
+
 // 카테고리 생성
 exports.create = async function (req, res) {
     let newCategory = new Category(req.body);
@@ -17,7 +29,7 @@ exports.create = async function (req, res) {
 
 // 카테고리 가져오기
 exports.findOne = async function (req, res) {
-    let cid = req.params.cid
+    let cid = req.params.cid;
 
     try {
         let category = await Category.findById(cid);
@@ -45,7 +57,7 @@ exports.updateOne = async function (req, res) {
 // 카테고리 삭제
 exports.deleteOne = async function (req, res) {
     let cid = req.params.cid;
-
+    
     try {
         await Category.deleteById(cid);
         res.send(utility.getSuccess());

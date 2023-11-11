@@ -2,6 +2,18 @@ const Format = require("../models/Format");
 const utility = require("./utility");
 
 
+exports.validateCreateParameter = (req, res, next) =>{
+    if(req.body.name === undefined){
+        utility.errorHandle({kind: "bad_request"}, req, res);
+        return;
+    }
+    Format.findByName(req.body.name).then(() => {
+        utility.errorHandle({kind: "bad_request"}, req, res)
+    }).catch(() => {
+        next();
+    });
+};
+
 // 형식 생성
 exports.create = async function (req, res) {
     let newFormat = new Format(req.body);
@@ -17,7 +29,7 @@ exports.create = async function (req, res) {
 
 // 형식 가져오기
 exports.findOne = async function (req, res) {
-    let fid = req.params.fid
+    let fid = req.params.fid;
 
     try {
         let format = await Format.findById(fid);

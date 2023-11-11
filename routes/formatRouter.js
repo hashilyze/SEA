@@ -8,7 +8,10 @@ const router = express.Router();
 
 
 // 형식 생성
-router.post("/", auth.requireAdmin, controller.create);
+router.post("/", 
+    auth.requireAdmin, 
+    controller.validateCreateParameter,
+    controller.create);
 // 형식 검색
 router.get("/search", controller.findAll);
 // 형식 가져오기
