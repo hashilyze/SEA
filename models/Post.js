@@ -90,7 +90,7 @@ Post.findById = async function (id) {
     let rows = await transactionWrapper(async (conn) => (await conn.query(sql, [id]))[0]);
 
     if (rows.length == 0) {
-        console.log(`Can not found post{ pid: ${id} }`);
+        console.error(`Can not found post{ pid: ${id} }`);
         throw { kind: "not_found" };
     } else {
         console.log(`Found post{ pid: ${id} }`);
@@ -100,8 +100,10 @@ Post.findById = async function (id) {
 Post.existById = async function(id) {
     try{
         await Post.findById(id);
+        console.log(`Exsit post { pid: ${id} }`);
         return true;
     }catch(err){
+        console.log(`Not exsit post { pid: ${id} }`);
         return false;
     }
 };

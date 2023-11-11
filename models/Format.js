@@ -28,7 +28,7 @@ async function findOne(column, key) {
     let rows = await transactionWrapper(async(conn) => (await conn.query(sql, [column, key]))[0]);
 
     if (rows.length == 0) {
-        console.log(`Can not found format{ ${column}: ${key} }`);
+        console.error(`Can not found format{ ${column}: ${key} }`);
         throw { kind: "not_found" };
     } else {
         console.log(`Found format{ ${column}: ${key} }`);
@@ -37,9 +37,11 @@ async function findOne(column, key) {
 };
 async function existOne(column, key) {
     try{
-        await Format.findOne(column, key);
+        await findOne(column, key);
+        console.log(`Exsit format { ${column}: ${key} }`);
         return true;
     }catch(err){
+        console.log(`Not exsit format { ${column}: ${key} }`);
         return false;
     }
 }

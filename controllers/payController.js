@@ -11,9 +11,10 @@ exports.payOnBasket = async (req, res) => {
     try{
         let baskets = await Basket.findAll({uid});
         for(let basket of baskets){
+            let list = await Download.findAll({uid: basket.uid, pid: basket.pid});
+            if(list.length == 0) await Post.addDownloadsById(pid, 1);
             await Download.create({uid: basket.uid, pid: basket.pid});
-            await Post.addDownloadsById(basket.pid, 1);
-            await  Basket.deleteById({uid: basket.uid, pid: basket.pid});
+            await Basket.deleteById({uid: basket.uid, pid: basket.pid});
         }
         res.send(utility.getSuccess());
     } catch(err){
@@ -27,8 +28,9 @@ exports.onePay = async (req, res) => {
     let pid = req.params.pid;
 
     try{
+        let list = await Download.findAll({uid, pid});
+        if(list.length == 0) await Post.addDownloadsById(pid, 1);
         await Download.create({uid, pid});
-        await Post.addDownloadsById(pid, 1);
         res.send(utility.getSuccess());
     } catch(err){
         utility.errorHandle(err, req, res);

@@ -47,7 +47,12 @@ exports.requireAdmin = function(req, res, next){
 };
 
 exports.extractWriter = async function(req, res, next){
-    let { writer } = await Post.findById(req.params.pid);
-    req.params.uid = writer;
-    next();
+    try{
+        let { writer } = await Post.findById(req.params.pid);
+        req.params.uid = writer;
+        next();
+    } catch(err){
+        utility.errorHandle({ kind: "not_found"}, req, res);
+    }
+    
 }

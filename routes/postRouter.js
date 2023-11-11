@@ -54,8 +54,8 @@ router.get("/board", (req, res) => res.send("게시물 갱신 페이지"));
 // 게시물 생성
 router.post("/", 
     auth.requirePrivate, 
-    controller.validateCreateParameter,
     upload.array("images"),
+    controller.validateCreateParameter,
     controller.create);
 // 게시물 검색
 router.get("/search", controller.findAll);
@@ -66,6 +66,7 @@ router.put("/:pid",
     auth.extractWriter, 
     auth.requirePrivateOnlyMine, 
     upload.array("images"),
+    controller.validateUpdateParameter,
     controller.updateOne);
 // 게시물 삭제
 router.delete("/:pid", 

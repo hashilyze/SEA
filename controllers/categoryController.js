@@ -4,10 +4,12 @@ const utility = require("./utility");
 
 exports.validateCreateParameter = async (req, res, next) =>{
     if(req.body.name === undefined){
+        console.log("There is not name parameter");
         utility.errorHandle({kind: "bad_request"}, req, res);
         return;
     }
     if(await Category.existByName(req.body.name)){
+        console.log("Duplicated as same name");
         utility.errorHandle({kind: "bad_request"}, req, res)
     } else{
         next();

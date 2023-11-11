@@ -38,9 +38,9 @@ User.create = async function (newUser) {
 async function findOne(column, key) {
     const sql = "SELECT * FROM User WHERE ?? = ?";
     let rows = await transactionWrapper(async (conn) => (await conn.query(sql, [column, key]))[0]);
-
+    
     if (rows.length == 0) {
-        console.log(`Can not found user{ ${column}: ${key} }`);
+        console.error(`Can not found user{ ${column}: ${key} }`);
         throw { kind: "not_found" };
     } else {
         console.log(`Found user{ ${column}: ${key} }`);
@@ -49,9 +49,11 @@ async function findOne(column, key) {
 };
 async function existOne(column, key) {
     try{
-        await User.findOne(column, key);
+        await findOne(column, key);
+        console.log(`Exsit user { ${column}: ${key} }`);
         return true;
     }catch(err){
+        console.log(`Not exsit user { ${column}: ${key} }`);
         return false;
     }
 }

@@ -42,7 +42,7 @@
             </select>
         </div>
         <div>
-            <input type="file" name="image" id="image" accept="image/*" multiple>
+            <input type="file" id="image" accept="image/*" multiple>
         </div>
         <div>
             <input type="text" id="inUrl" placeholder="url"> 
@@ -69,7 +69,8 @@
         } else {
             req.headers = { };
             const formData = new FormData();
-            for(let file of document.getElementById("image").files){
+            let files = document.getElementById("image").files;
+            for(let file of files){
                 formData.append("images", file);
             }
             

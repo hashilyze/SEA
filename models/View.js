@@ -33,7 +33,7 @@ View.findById = async function (id) {
     let rows = await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
 
     if (rows.length == 0) {
-        console.log(`Can not found view{ uid: ${id.uid}, pid: ${id.pid} }`);
+        console.error(`Can not found view{ uid: ${id.uid}, pid: ${id.pid} }`);
         throw { kind: "not_found" };
     } else {
         console.log(`Found view{ uid: ${id.uid}, pid: ${id.pid} }`);

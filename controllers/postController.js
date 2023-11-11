@@ -9,18 +9,37 @@ const utility = require("./utility");
 
 
 exports.validateCreateParameter = async (req, res, next) =>{
-    if(req.body.title === undefined
-        || req.body.description === undefined
-        || req.body.price === undefined || isNaN(req.body.price)
-        || req.body.writer === undefined || isNaN(req.body.writer) || !(await User.existById(req.body.writer))
-        || req.body.category === undefined || isNaN(req.body.category) || !(await Category.existById(req.body.category))
-        || req.body.format === undefined || isNaN(req.body.format) || !(await Format.existById(req.body.format))
-        ){
-        utility.errorHandle({kind: "bad_request"}, req, res);
+    if(req.body.title === undefined){
+        console.log(`Title is not exist`);
+    } else if(req.body.description === undefined){
+        console.log(`Description is not exist`);
+    } else if(req.body.price === undefined || isNaN(req.body.price)){
+        console.log(`Price is not exist`);
+    } else if(req.body.writer === undefined || isNaN(req.body.writer) || !(await User.existById(req.body.writer))){
+        console.log(`Writer(${req.body.writer}) is not exist`);
+    } else if(req.body.category === undefined || isNaN(req.body.category) || !(await Category.existById(req.body.category))){
+        console.log(`Category(${req.body.category}) is not exist`);
+    } else if(req.body.format === undefined || isNaN(req.body.format) || !(await Format.existById(req.body.format))){
+        console.log(`Format(${req.body.format}) is not exist`);
+    } else{
+        next();
         return;
     }
-    
-    next();
+    utility.errorHandle({kind: "bad_request"}, req, res);
+};
+
+exports.validateUpdateParameter = async (req, res, next) =>{
+    if(req.body.writer !== undefined && !(await User.existById(req.body.writer))){
+        console.log(`Writer(${req.body.writer}) is not exist`);
+    } else if(req.body.category !== undefined && !(await Category.existById(req.body.category))){
+        console.log(`Category(${req.body.category}) is not exist`);
+    } else if(req.body.format !== undefined && !(await Format.existById(req.body.format))){
+        console.log(`Format(${req.body.format}) is not exist`);
+    } else{
+        next();
+        return;
+    }
+    utility.errorHandle({kind: "bad_request"}, req, res);
 };
 
 
@@ -58,7 +77,6 @@ exports.updateOne = async function (req, res){
     let updateInfo = new Post(req.body);
     if(req.files) 
         updateInfo.images = req.files.map((val) => val.filename);
-    console.log(updateInfo);
 
     try {
         await Post.updateById(pid, updateInfo);

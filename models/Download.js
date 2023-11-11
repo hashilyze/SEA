@@ -33,7 +33,7 @@ Download.findById = async function (id) {
     let rows = await transactionWrapper(async (conn) => (await conn.query(sql, vals))[0]);
 
     if (rows.length == 0) {
-        console.log(`Can not found download{ uid: ${id.uid}, pid: ${id.pid} }`);
+        console.error(`Can not found download{ uid: ${id.uid}, pid: ${id.pid} }`);
         throw { kind: "not_found" };
     } else {
         console.log(`Found download{ uid: ${id.uid}, pid: ${id.pid} }`);

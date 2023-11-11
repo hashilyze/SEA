@@ -9,10 +9,13 @@ exports.signin = async function (req, res){
     try{
         let user = await User.findByLoginId(login_id);
         if(user.password == password){
+            console.log("Matched password");
+            console.log("Success login");
             req.session.uid = user.uid;
             req.session.role = user.role;
             res.send(utility.getSuccess());
         } else{
+            console.log("Unmatched password");
             res.status(401).send(utility.getFail());    
         }
     } catch(err){
@@ -22,6 +25,7 @@ exports.signin = async function (req, res){
 
 // 로그아웃
 exports.signout = function(req, res){
+    console.log("Success logout");
     req.session.uid = undefined;
     req.session.role = undefined;
     res.send(utility.getSuccess());
@@ -41,5 +45,6 @@ exports.whoOnline = function (req, res){
             resBody.state = "admin";
         }
     }
+    console.log(`Current account info: { uid: ${resBody.uid}, role: ${resBody.state} }`);
     res.send(resBody);
 }

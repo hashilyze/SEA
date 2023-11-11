@@ -28,7 +28,7 @@ async function findOne(column, key) {
     let rows = await transactionWrapper(async(conn) => (await conn.query(sql, [column, key]))[0]);
 
     if (rows.length == 0) {
-        console.log(`Can not found category{ ${column}: ${key} }`);
+        console.error(`Can not found category{ ${column}: ${key} }`);
         throw { kind: "not_found" };
     } else {
         console.log(`Found category{ ${column}: ${key} }`);
@@ -37,9 +37,11 @@ async function findOne(column, key) {
 };
 async function existOne(column, key) {
     try{
-        await Category.findOne(column, key);
+        await findOne(column, key);
+        console.log(`Exsit category { ${column}: ${key} }`);
         return true;
     }catch(err){
+        console.log(`Not exsit category { ${column}: ${key} }`);
         return false;
     }
 };
@@ -48,7 +50,7 @@ async function existOne(column, key) {
 Category.findById = async (id) => findOne("cid", id);
 Category.findByName = async (name) => findOne("name", name);
 Category.existById = async (id) => existOne("cid", id);
-Category.existByName = async (name) => existOne("name", id);
+Category.existByName = async (name) => existOne("name", name);
 
 
 
